@@ -49,7 +49,7 @@ namespace Aws
                 /**
                 * Writes the stream to the output stream.
                 */
-                virtual void LogStream(LogLevel logLevel, const char* tag, const Aws::OStringStream &messageStream) = 0;
+                virtual void LogStream(LogLevel logLevel, const char* tag, const Aws::OStringStream &messageStream, ...) = 0;
 
             };
 

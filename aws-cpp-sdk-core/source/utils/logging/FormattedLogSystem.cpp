@@ -103,7 +103,7 @@ void FormattedLogSystem::Log(LogLevel logLevel, const char* tag, const char* for
     va_end(args);
 }
 
-void FormattedLogSystem::LogStream(LogLevel logLevel, const char* tag, const Aws::OStringStream &message_stream)
+void FormattedLogSystem::LogStream(LogLevel logLevel, const char* tag, const Aws::OStringStream &message_stream, ...)
 {
     Aws::StringStream ss;
     ss << CreateLogPrefixLine(logLevel, tag) << message_stream.rdbuf()->str() << std::endl;

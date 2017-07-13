@@ -58,7 +58,7 @@ namespace Aws
                 /**
                  * Writes the stream to ProcessFormattedStatement.
                  */
-                virtual void LogStream(LogLevel logLevel, const char* tag, const Aws::OStringStream &messageStream) override;
+                virtual void LogStream(LogLevel logLevel, const char* tag, const Aws::OStringStream &messageStream, ...) override;
 
             protected:
                 /**

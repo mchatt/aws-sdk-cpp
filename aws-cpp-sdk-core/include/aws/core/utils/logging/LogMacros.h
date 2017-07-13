@@ -48,143 +48,173 @@
 
 #else
 
+    constexpr const char* str_end(const char *str) {
+        return *str ? str_end(str + 1) : str;
+    }
+
+    constexpr bool str_slant(const char *str) {
+        return *str == '/' ? true : (*str ? str_slant(str + 1) : false);
+    }
+
+    constexpr const char* r_slant(const char* str) {
+        return *str == '/' ? (str + 1) : r_slant(str - 1);
+    }
+    // compute at compile time the filename from the fullpath __FILE__
+    constexpr const char* file_name(const char* str) {
+        return str_slant(str) ? r_slant(str_end(str)) : str;
+    }
+
     #define AWS_LOG(level, tag, ...) \
         { \
+            constexpr const char *fileName = file_name(__FILE__); \
             Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
             if ( logSystem && logSystem->GetLogLevel() >= level ) \
             { \
-                logSystem->Log(level, tag, __VA_ARGS__); \
+                logSystem->Log(level, tag, __VA_ARGS__, fileName, __LINE__);   \
             } \
         }
 
     #define AWS_LOG_FATAL(tag, ...) \
         { \
+            constexpr const char *fileName = file_name(__FILE__); \
             Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
             if ( logSystem && logSystem->GetLogLevel() >= Aws::Utils::Logging::LogLevel::Fatal ) \
             { \
-                logSystem->Log(Aws::Utils::Logging::LogLevel::Fatal, tag, __VA_ARGS__); \
+                logSystem->Log(Aws::Utils::Logging::LogLevel::Fatal, tag, __VA_ARGS__, fileName, __LINE__); \
             } \
         }
 
     #define AWS_LOG_ERROR(tag, ...) \
         { \
+            constexpr const char *fileName = file_name(__FILE__); \
             Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
             if ( logSystem && logSystem->GetLogLevel() >= Aws::Utils::Logging::LogLevel::Error ) \
             { \
-                logSystem->Log(Aws::Utils::Logging::LogLevel::Error, tag, __VA_ARGS__); \
+                logSystem->Log(Aws::Utils::Logging::LogLevel::Error, tag, __VA_ARGS__, fileName, __LINE__); \
             } \
         }
 
     #define AWS_LOG_WARN(tag, ...) \
         { \
+            constexpr const char *fileName = file_name(__FILE__); \
             Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
             if ( logSystem && logSystem->GetLogLevel() >= Aws::Utils::Logging::LogLevel::Warn ) \
             { \
-                logSystem->Log(Aws::Utils::Logging::LogLevel::Warn, tag, __VA_ARGS__); \
+                logSystem->Log(Aws::Utils::Logging::LogLevel::Warn, tag, __VA_ARGS__, fileName, __LINE__); \
             } \
         }
 
     #define AWS_LOG_INFO(tag, ...) \
         { \
+            constexpr const char *fileName = file_name(__FILE__); \
             Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
             if ( logSystem && logSystem->GetLogLevel() >= Aws::Utils::Logging::LogLevel::Info ) \
             { \
-                logSystem->Log(Aws::Utils::Logging::LogLevel::Info, tag, __VA_ARGS__); \
+                logSystem->Log(Aws::Utils::Logging::LogLevel::Info, tag, __VA_ARGS__, fileName, __LINE__); \
             } \
         }
 
     #define AWS_LOG_DEBUG(tag, ...) \
         { \
+            constexpr const char *fileName = file_name(__FILE__); \
             Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
             if ( logSystem && logSystem->GetLogLevel() >= Aws::Utils::Logging::LogLevel::Debug ) \
             { \
-                logSystem->Log(Aws::Utils::Logging::LogLevel::Debug, tag, __VA_ARGS__); \
+                logSystem->Log(Aws::Utils::Logging::LogLevel::Debug, tag, __VA_ARGS__, fileName, __LINE__); \
             } \
         }
 
     #define AWS_LOG_TRACE(tag, ...) \
         { \
+            constexpr const char *fileName = file_name(__FILE__); \
             Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
             if ( logSystem && logSystem->GetLogLevel() >= Aws::Utils::Logging::LogLevel::Trace ) \
             { \
-                logSystem->Log(Aws::Utils::Logging::LogLevel::Trace, tag, __VA_ARGS__); \
+                logSystem->Log(Aws::Utils::Logging::LogLevel::Trace, tag, __VA_ARGS__, fileName, __LINE__); \
             } \
         }
 
     #define AWS_LOGSTREAM(level, tag, streamExpression) \
         { \
+            constexpr const char *fileName = file_name(__FILE__); \
             Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
             if ( logSystem && logSystem->GetLogLevel() >= level ) \
             { \
                 Aws::OStringStream logStream; \
                 logStream << streamExpression; \
-                logSystem->LogStream( logLevel, tag, logStream ); \
+                logSystem->LogStream( logLevel, tag, logStream, fileName, __LINE__); \
             } \
         }
 
     #define AWS_LOGSTREAM_FATAL(tag, streamExpression) \
         { \
+            constexpr const char *fileName = file_name(__FILE__); \
             Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
             if ( logSystem && logSystem->GetLogLevel() >= Aws::Utils::Logging::LogLevel::Fatal ) \
             { \
                 Aws::OStringStream logStream; \
                 logStream << streamExpression; \
-                logSystem->LogStream( Aws::Utils::Logging::LogLevel::Fatal, tag, logStream ); \
+                logSystem->LogStream( Aws::Utils::Logging::LogLevel::Fatal, tag, logStream, fileName, __LINE__); \
             } \
         }
 
     #define AWS_LOGSTREAM_ERROR(tag, streamExpression) \
         { \
+            constexpr const char *fileName = file_name(__FILE__); \
             Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
             if ( logSystem && logSystem->GetLogLevel() >= Aws::Utils::Logging::LogLevel::Error ) \
             { \
                 Aws::OStringStream logStream; \
                 logStream << streamExpression; \
-                logSystem->LogStream( Aws::Utils::Logging::LogLevel::Error, tag, logStream ); \
+                logSystem->LogStream( Aws::Utils::Logging::LogLevel::Error, tag, logStream, fileName, __LINE__); \
             } \
         }
 
     #define AWS_LOGSTREAM_WARN(tag, streamExpression) \
         { \
+            constexpr const char *fileName = file_name(__FILE__); \
             Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
             if ( logSystem && logSystem->GetLogLevel() >= Aws::Utils::Logging::LogLevel::Warn ) \
             { \
                 Aws::OStringStream logStream; \
                 logStream << streamExpression; \
-                logSystem->LogStream( Aws::Utils::Logging::LogLevel::Warn, tag, logStream ); \
+                logSystem->LogStream( Aws::Utils::Logging::LogLevel::Warn, tag, logStream, fileName, __LINE__); \
             } \
         }
 
     #define AWS_LOGSTREAM_INFO(tag, streamExpression) \
         { \
+            constexpr const char *fileName = file_name(__FILE__); \
             Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
             if ( logSystem && logSystem->GetLogLevel() >= Aws::Utils::Logging::LogLevel::Info ) \
             { \
                 Aws::OStringStream logStream; \
                 logStream << streamExpression; \
-                logSystem->LogStream( Aws::Utils::Logging::LogLevel::Info, tag, logStream ); \
+                logSystem->LogStream( Aws::Utils::Logging::LogLevel::Info, tag, logStream, fileName, __LINE__); \
             } \
         }
 
     #define AWS_LOGSTREAM_DEBUG(tag, streamExpression) \
         { \
+            constexpr const char *fileName = file_name(__FILE__); \
             Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
             if ( logSystem && logSystem->GetLogLevel() >= Aws::Utils::Logging::LogLevel::Debug ) \
             { \
                 Aws::OStringStream logStream; \
                 logStream << streamExpression; \
-                logSystem->LogStream( Aws::Utils::Logging::LogLevel::Debug, tag, logStream ); \
+                logSystem->LogStream( Aws::Utils::Logging::LogLevel::Debug, tag, logStream, fileName, __LINE__); \
             } \
         }
 
     #define AWS_LOGSTREAM_TRACE(tag, streamExpression) \
         { \
+            constexpr const char *fileName = file_name(__FILE__); \
             Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
             if ( logSystem && logSystem->GetLogLevel() >= Aws::Utils::Logging::LogLevel::Trace ) \
             { \
                 Aws::OStringStream logStream; \
                 logStream << streamExpression; \
-                logSystem->LogStream( Aws::Utils::Logging::LogLevel::Trace, tag, logStream ); \
+                logSystem->LogStream( Aws::Utils::Logging::LogLevel::Trace, tag, logStream, fileName, __LINE__); \
             } \
         }
 
